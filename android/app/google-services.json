@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "117674045075",
+    "project_id": "employement-management-s-99a4b",
+    "storage_bucket": "employement-management-s-99a4b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117674045075:android:5f4febc4c15f2aedede766",
+        "android_client_info": {
+          "package_name": "com.example.employement_management_system"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7tv_gQ6-9O-Ol-xGtzTGP2OeOXUCznvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
