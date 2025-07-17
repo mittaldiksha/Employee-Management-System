@@ -31,7 +31,7 @@ class Employee {
       'name': name,
       'email': email,
       'phone': phone,
-      'role': role,
+      'role': role, 
       'documentUrl': documentUrl,
     };
   }

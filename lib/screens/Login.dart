@@ -1,4 +1,4 @@
-import 'package:employement_management_system/screens/Home_Dashboard.dart';
+import 'package:employement_management_system/screens/admin_home_dashboard.dart';
 import 'package:employement_management_system/screens/SignUp.dart';
 import 'package:employement_management_system/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +30,9 @@ class _MyLoginState extends State<MyLogin> {
         Navigator.push(context, MaterialPageRoute(builder: (context)=>Dashboard()));
       }
     } catch (e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error :"+ e.toString())),
+      );
       print("Error :"+ e.toString() );
     }
   }

@@ -1,5 +1,6 @@
-import 'package:employement_management_system/screens/Home_Dashboard.dart';
+import 'package:employement_management_system/screens/admin_home_dashboard.dart';
 import 'package:employement_management_system/screens/Login.dart';
+import 'package:employement_management_system/screens/addDetails.dart';
 import 'package:employement_management_system/screens/phoneLogin.dart';
 import 'package:employement_management_system/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,7 +22,6 @@ class _MySignUpState extends State<MySignUp> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
-  // TextEditingController _name = TextEditingController();
   TextEditingController _cpassword = TextEditingController();
   final authservice = AuthService();
 
@@ -29,7 +29,7 @@ class _MySignUpState extends State<MySignUp> {
     try{
       final user = await authservice.signUp(_email.text, _password.text);
       if(user!= null){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> Dashboard()));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> addDetails()));
       }
     }catch(e){
       print("Error");
@@ -65,33 +65,6 @@ class _MySignUpState extends State<MySignUp> {
                             key: _key,
                               child: Column(
                                 children: [
-                                  // TextFormField(
-                                  //   controller: _name,
-                                  //   style: TextStyle(color: Colors.black),
-                                  //   decoration: InputDecoration(
-                                  //       enabledBorder: OutlineInputBorder(
-                                  //         borderRadius: BorderRadius.circular(10),
-                                  //         borderSide: BorderSide(
-                                  //           color: Colors.black,
-                                  //         ),
-                                  //       ),
-                                  //       focusedBorder: OutlineInputBorder(
-                                  //         borderRadius: BorderRadius.circular(10),
-                                  //         borderSide: BorderSide(
-                                  //           color: Colors.black,
-                                  //         ),
-                                  //       ),
-                                  //       fillColor: Colors.grey.shade100,
-                                  //       filled: true,
-                                  //       hintText: "Name",
-                                  //       hintStyle: TextStyle(color: Colors.black),
-                                  //       border: OutlineInputBorder(
-                                  //         borderRadius: BorderRadius.circular(10),
-                                  //       )),
-                                  // ),
-                                  // SizedBox(
-                                  //   height: 30,
-                                  // ),
                                   TextFormField(
                                     validator: (value){
                                       if(value!.isEmpty) {

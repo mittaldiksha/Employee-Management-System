@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,6 +17,7 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final roleController = TextEditingController();
+  final passwordController = TextEditingController();
 
   bool isLoading = false;
   String? uploadedDocUrl;
@@ -29,7 +31,7 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
       final storageRef = FirebaseStorage.instance.ref('documents/$fileName');
 
       try {
-        final uploadTask = await storageRef.putData(fileBytes);
+        await storageRef.putData(fileBytes);
         final downloadUrl = await storageRef.getDownloadURL();
         setState(() {
           uploadedDocUrl = downloadUrl;
@@ -51,6 +53,14 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
     setState(() => isLoading = true);
 
     try {
+      // Step 1: Create Firebase Auth user with email and password
+      UserCredential newUser = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      // Step 2: Add employee data to Firestore using UID
       final employeeData = {
         'name': nameController.text.trim(),
         'email': emailController.text.trim(),
@@ -59,7 +69,10 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
         'documentUrl': uploadedDocUrl,
       };
 
-      await FirebaseFirestore.instance.collection('employees').add(employeeData);
+      await FirebaseFirestore.instance
+          .collection('employees')
+          .doc(newUser.user!.uid)
+          .set(employeeData);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Employee added successfully")),
@@ -70,6 +83,7 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
       emailController.clear();
       phoneController.clear();
       roleController.clear();
+      passwordController.clear();
       setState(() => uploadedDocUrl = null);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -109,6 +123,12 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
                 controller: roleController,
                 decoration: InputDecoration(labelText: "Role (e.g. Developer)"),
                 validator: (value) => value!.isEmpty ? "Enter role" : null,
+              ),
+              TextFormField(
+                controller: passwordController,
+                decoration: InputDecoration(labelText: "Password"),
+                obscureText: true,
+                validator: (value) => value!.length < 6 ? "Minimum 6 characters required" : null,
               ),
               const SizedBox(height: 12),
               ElevatedButton.icon(
