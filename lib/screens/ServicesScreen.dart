@@ -1,6 +1,10 @@
+import 'package:employement_management_system/screens/apply_leave_screen.dart';
+import 'package:employement_management_system/screens/employee_payroll_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'Dashboard.dart';
 
 class Servicesscreen extends StatefulWidget {
   @override
@@ -41,7 +45,18 @@ class _ServicesscreenState extends State<Servicesscreen> {
     if (isLoading) return Center(child: CircularProgressIndicator());
 
     return Scaffold(
-      appBar: AppBar(title: Text("Services")),
+      appBar: AppBar(
+          title: Text("Services"),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
+            }
+        ),
+      ),
       body: ListView(
         children: [
           if (userRole.toLowerCase() == 'admin' || userRole.toLowerCase() == 'hr') ...[
@@ -93,14 +108,16 @@ class _ServicesscreenState extends State<Servicesscreen> {
             leading: Icon(Icons.beach_access),
             title: Text("Apply Leave"),
             onTap: () {
-              Navigator.pushNamed(context, '/leave');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ApplyLeaveScreen()));
             },
           ),
           ListTile(
             leading: Icon(Icons.download),
             title: Text("Download Salary Slip"),
             onTap: () {
-              Navigator.pushNamed(context, '/salarySlip');
+              // Navigator.pushNamed(context, '/salarySlip');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeePayslipScreen()));
+
             },
           ),
           ListTile(

@@ -1,13 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:employement_management_system/screens/Dashboard.dart';
+import 'package:employement_management_system/screens/Login.dart';
 import 'package:employement_management_system/screens/ProfileScreen.dart';
 import 'package:employement_management_system/screens/ServicesScreen.dart';
+import 'package:employement_management_system/screens/admin_payroll_generate_screen.dart';
 import 'package:employement_management_system/screens/assign_task_screen.dart';
 import 'package:employement_management_system/screens/attendance_screen.dart';
 import 'package:employement_management_system/screens/addEmployee.dart';
-// import 'package:employement_management_system/screens/leave_management_screen.dart';
 import 'package:flutter/material.dart';
 import '../Database/employee_database.dart';
 import '../models/employee_model.dart';
+import 'admin_leave_requests.dart';
 
 class HomeDashboard extends StatefulWidget {
   const HomeDashboard({super.key});
@@ -37,6 +40,41 @@ class _HomeDashboardState extends State<HomeDashboard> {
       appBar: AppBar(
         title: Text("Admin Dashboard"),
         backgroundColor: Colors.orangeAccent,
+        leading: Builder(
+          builder: (context) {
+            return StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('leaves')
+                  .where('status', isEqualTo: 'pending')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                bool showDot = snapshot.hasData && snapshot.data!.docs.isNotEmpty;
+
+                return Stack(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
+                    if (showDot)
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -46,6 +84,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
           ),
         ],
       ),
+
       drawer: Drawer(
         child: ListView(
           children: [
@@ -69,14 +108,50 @@ class _HomeDashboardState extends State<HomeDashboard> {
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AttendanceScreen())),
             ),
             ListTile(
-              leading: Icon(Icons.event_note),
-              title: Text("Leave Management"),
-              // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeaveManagementScreen())),
+              leading: Icon(Icons.payments_outlined),
+              title: Text("Generate Payslip"),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => GeneratePayrollScreen())),
             ),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('leaves')
+                  .where('status', isEqualTo: 'pending')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                bool showRedDot = snapshot.hasData && snapshot.data!.docs.isNotEmpty;
+
+                return ListTile(
+                  leading: Stack(
+                    children: [
+                      Icon(Icons.event_note),
+                      if (showRedDot)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  title: Text("Leave Management"),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AdminLeaveRequests()),
+                  ),
+                );
+              },
+            ),
+
             ListTile(
               leading: Icon(Icons.logout),
               title: Text("Logout"),
-              onTap: () => Navigator.pushReplacementNamed(context, '/login'),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLogin()))
             ),
           ],
         ),
